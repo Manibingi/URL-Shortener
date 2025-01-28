@@ -10,6 +10,8 @@ router.get("/links/:id", auth, linkController.getLinkById);
 router.put("/links/:id", auth, linkController.updateLink);
 router.delete("/links/:id", auth, linkController.deleteLink);
 
+router.get("/", auth, linkController.getInfo);
+
 // router.get("/:shortUrl", auth, linkController.redirectToOriginal);
 
 module.exports = router;

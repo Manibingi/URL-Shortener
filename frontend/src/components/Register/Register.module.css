@@ -1,0 +1,124 @@
+.registerContainer {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+.leftContainer {
+  width: 35%;
+  background-image: url("../../assets/m_image.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  padding: 4vh;
+}
+
+/* registerleft container */
+.rightContainer {
+  width: 65%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 5vh;
+}
+
+.buttons {
+  position: relative;
+  left: 23vw;
+  display: flex;
+  align-items: center;
+  gap: 3vw;
+}
+.buttons button {
+  font-family: Manrope;
+  font-size: 1rem;
+  font-weight: 600;
+  background: transparent;
+  cursor: pointer;
+}
+
+.buttons .signUpBtn {
+  color: #3b3c51;
+  border: none;
+  outline: none;
+}
+.buttons .signUpBtn:hover {
+  color: #1b48da;
+}
+
+.buttons .loginBtn {
+  color: #ffffff;
+  border: none;
+  outline: none;
+  background-color: #1b48da;
+  padding: 10px 14px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+.buttons .loginBtn:hover {
+  transform: scale(1.03);
+}
+
+/* registerForm */
+
+.registerForm_contant {
+  display: flex;
+  flex-direction: column;
+  gap: 3vh;
+  width: 70%;
+  margin: 5vh;
+}
+
+.join_us p {
+  font-family: Manrope;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #3b3c51;
+}
+
+.registerForm input {
+  width: 100%;
+  display: flex;
+  padding: 10px 20px;
+  border-radius: 6px;
+  outline: none;
+  border: 1px solid #3b3c51;
+  font-family: Manrope;
+  font-size: 1.1rem;
+  font-family: 500;
+}
+
+.registerForm button {
+  width: 100%;
+  background-color: #1b48da;
+  text-align: center;
+  padding: 10px 0px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: Manrope;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.registerForm button:hover {
+  transform: scale(1.02);
+}
+
+.already_have_account p {
+  font-family: Manrope;
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.already_have_account a {
+  font-family: Manrope;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: #1b48da;
+  text-decoration: none;
+}

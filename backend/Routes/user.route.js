@@ -21,7 +21,10 @@ router.post(
     check("password", "Password must be at least 6 characters").isLength({
       min: 4,
     }),
-    check("mobile", "mobile number is required").not().isEmpty(),
+    check("mobile", "mobile number is required")
+      .not()
+      .isEmpty()
+      .isLength({ min: 10 }),
   ],
   registerUser
 );

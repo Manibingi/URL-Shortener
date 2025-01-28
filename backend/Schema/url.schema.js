@@ -29,6 +29,28 @@ const urlSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    deviceDetails: [
+      {
+        deviceType: String, // E.g., Mobile, Tablet, Desktop
+        ipAddress: String, // Store the IP address of the user
+        clickedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
+    dailyClickCounts: [
+      {
+        date: {
+          type: String, // Store the date as a string (e.g., "2025-01-26")
+          required: true,
+        },
+        count: {
+          type: Number, // Number of clicks for the specific date
+          default: 0,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

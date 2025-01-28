@@ -1,0 +1,74 @@
+.sidebarParent {
+  display: flex;
+  font-family: Manrope;
+}
+
+.left {
+  height: 100vh;
+}
+
+.sideBar {
+  width: 18vw;
+  border-right: 1px solid #ececf2;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.outlet {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  /* height: 10vh; */
+}
+
+.link,
+.analytics,
+.dashboard {
+  position: relative;
+  padding-left: 3vw;
+  color: #3b3c51;
+  cursor: pointer;
+}
+
+.link p,
+.analytics p,
+.dashboard p {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.link i,
+.analytics i,
+.dashboard i {
+  font-size: 1.2rem;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  text-align: center;
+}
+
+.setting {
+  position: relative;
+  margin-top: 5vh;
+  padding: 7vh;
+  border-bottom: 2px solid #ececf2;
+  border-top: 2px solid #ececf2;
+  color: #3b3c51;
+  cursor: pointer;
+}
+
+.setting i {
+  font-size: 1.2rem;
+  position: absolute;
+  left: 0;
+  text-align: center;
+}
+
+.setting p {
+  font-size: 1rem;
+  font-weight: 600;
+}

@@ -35,6 +35,7 @@ exports.shortenUrl = async (req, res) => {
         shortUrl,
         urlCode,
         remarks,
+        clickCount: 1,
         expiryDate: expiration,
         userId,
         status: "Active",
@@ -62,6 +63,51 @@ exports.redirectUrl = async (req, res) => {
       return res.status(404).json("No URL found");
     }
 
+    const countUrl = (urlData.clickCount += 1);
+
+    // Get today's date in "YYYY-MM-DD" format
+    const today = new Date().toISOString().split("T")[0];
+
+    // Check if there's already a record for today
+    const todayClickData = urlData.dailyClickCounts.find(
+      (data) => data.date === today
+    );
+
+    if (todayClickData) {
+      // Increment the click count for today
+      todayClickData.count += 1;
+    } else {
+      // Add a new entry for today's date
+      urlData.dailyClickCounts.push({
+        date: today,
+        count: 1,
+      });
+    }
+
+    // Ensure cumulative addition of today's count to the previous day's count
+    urlData.dailyClickCounts.sort(
+      (a, b) => new Date(a.date) - new Date(b.date)
+    ); // Sort by date
+    for (let i = 1; i < urlData.dailyClickCounts.length; i++) {
+      urlData.dailyClickCounts[i].count +=
+        urlData.dailyClickCounts[i - 1].count;
+    }
+
+    // Extract device type and IP address
+    // const deviceType = req.device.type || "Desktop"; // Use express-device to get device type
+    const deviceType = req.device.parser.useragent.family || "Desktop";
+    const ipAddress =
+      req.headers["x-forwarded-for"] || req.socket.remoteAddress; // Get IP address
+
+    // Save the device details and IP address to the database
+    urlData.deviceDetails.push({
+      deviceType,
+      ipAddress,
+      clickedAt: new Date(), // Store the current timestamp
+    });
+
+    await urlData.save();
+
     // If found, redirect the user to the original URL
     return res.redirect(urlData.destinationUrl);
   } catch (err) {
@@ -73,18 +119,38 @@ exports.redirectUrl = async (req, res) => {
 // Get all links
 exports.getAllLinks = async (req, res) => {
   try {
-    const links = await Link.find();
-    res.status(200).json({ data: links });
+    const links = await UrlSchema.find();
+    res.status(200).json({ success: true, data: links });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ success: false, error: error.message });
   }
+
+  const { page = 1, limit = 10, search = "" } = req.query;
+
+  // setTimeout(async () => {
+  //   const query = search
+  //     ? { originalUrl: { $regex: search, $options: "i" } }
+  //     : {};
+  //   const urls = await UrlSchema.find(query)
+  //     .limit(limit * 1)
+  //     .skip((page - 1) * limit)
+  //     .exec();
+
+  //   const count = await UrlSchema.countDocuments(query);
+
+  //   res.json({
+  //     urls,
+  //     totalPages: Math.ceil(count / limit),
+  //     currentPage: page,
+  //   });
+  // }, 3000);
 };
 
 // Get a single link by ID
 exports.getLinkById = async (req, res) => {
   try {
     const { id } = req.params;
-    const link = await Link.findById(id);
+    const link = await UrlSchema.findById(id);
 
     if (!link) {
       return res.status(404).json({ error: "Link not found" });
@@ -118,7 +184,7 @@ exports.updateLink = async (req, res) => {
       }
     }
 
-    const updatedLink = await Link.findByIdAndUpdate(id, updateData, {
+    const updatedLink = await UrlSchema.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
     });
@@ -140,7 +206,7 @@ exports.deleteLink = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const deletedLink = await Link.findByIdAndDelete(id);
+    const deletedLink = await UrlSchema.findByIdAndDelete(id);
 
     if (!deletedLink) {
       return res.status(404).json({ error: "Link not found" });
@@ -151,5 +217,23 @@ exports.deleteLink = async (req, res) => {
       .json({ message: "Link deleted successfully", data: deletedLink });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+// get info from the db
+
+exports.getInfo = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    // Fetch all URLs created by the authenticated user
+    const urls = await UrlSchema.find({ userId: req.user._id });
+
+    if (!urls.length) {
+      return res.status(404).json({ message: "No links found for this user" });
+    }
+
+    res.json(urls);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving URLs", error });
   }
 };
