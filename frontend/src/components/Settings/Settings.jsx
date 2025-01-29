@@ -1,61 +1,153 @@
-import React, { useState } from "react";
-import styles from "./Settings.module.css";
+import React, { useEffect, useState } from "react";
+import style from "./Settings.module.css";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Settings = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "Rahul Singh",
-    email: "rahulsingh@gmail.com",
-    mobile: "1234567890",
+    name: "",
+    email: "",
+    mobile: "",
   });
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
-  const handleSave = () => {
-    alert("Changes saved successfully!");
+  useEffect(() => {
+    fetchUser();
+  }, []);
+  // fetching the user data from the dackend
+  const fetchUser = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8000/api/auth/getUser",
+        {
+          headers: { Authorization: `${localStorage.getItem("token")}` },
+        }
+      );
+      const userData = response.data.user;
+      setFormData({
+        name: userData.name,
+        email: userData.email,
+        mobile: userData.mobile,
+      });
+    } catch (error) {
+      console.log("Failed to fetch user data", error);
+    }
   };
 
-  const handleDelete = () => {
-    alert("Account deleted!");
+  // submitting the setting form
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    const updateUser = {};
+    if (formData.name) updateUser.name = formData.name;
+    if (formData.email) updateUser.email = formData.email;
+    if (formData.mobile) updateUser.mobile = formData.mobile;
+
+    try {
+      const response = await axios.put(
+        "http://localhost:8000/api/auth/updateUser",
+        updateUser,
+        {
+          headers: { Authorization: `${localStorage.getItem("token")}` },
+        }
+      );
+
+      toast.success("Profile updated successfully!", {
+        position: "top-right",
+      });
+
+      // If email is updated, logout user
+      console.log(updateUser.email);
+      console.log(formData.email);
+      if (updateUser.email !== formData.email) {
+        logout();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // logout function
+  const logout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  // delete the user
+  const deleteUser = async () => {
+    try {
+      const response = await axios.delete(
+        "http://localhost:8000/api/auth/deleteUser",
+        {
+          headers: { Authorization: `${localStorage.getItem("token")}` },
+        }
+      );
+
+      toast.success("user account deleted successfully");
+      navigate("/login");
+    } catch (error) {
+      console.log("error in deleting user account", error);
+      toast.error("error in deleting user account");
+    }
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.formGroup}>
-        <label>Name</label>
-        <input
-          type="text"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-        />
+    <>
+      <div className={style.settingContainer}>
+        <form onSubmit={handleFormSubmit} className={style.settingForm}>
+          <div className={style.formGroup}>
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              name="name"
+              // placeholder="kumar"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className={style.formGroup}>
+            <label htmlFor="name">Email Id</label>
+            <input
+              type="email"
+              name="email"
+              // placeholder="kumar@gmail.com"
+              value={formData.email}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className={style.formGroup}>
+            <label htmlFor="name">Mobile No.</label>
+            <input
+              type="number"
+              name="mobile"
+              // placeholder="1234567890"
+              value={formData.mobile}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className={style.settingBtns}>
+            <div>
+              <button className={style.SaveBtn} type="submit">
+                Save Changes
+              </button>
+            </div>
+            <div>
+              <button className={style.deleteBtn} onClick={deleteUser}>
+                Delete Account
+              </button>
+            </div>
+          </div>
+        </form>
       </div>
-      <div className={styles.formGroup}>
-        <label>Email id</label>
-        <input
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-      </div>
-      <div className={styles.formGroup}>
-        <label>Mobile no.</label>
-        <input
-          type="text"
-          name="mobile"
-          value={formData.mobile}
-          onChange={handleChange}
-        />
-      </div>
-      <button className={styles.saveButton} onClick={handleSave}>
-        Save Changes
-      </button>
-      <button className={styles.deleteButton} onClick={handleDelete}>
-        Delete Account
-      </button>
-    </div>
+    </>
   );
 };
 

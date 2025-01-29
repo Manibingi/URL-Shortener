@@ -22,7 +22,7 @@ const urlSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    clickCount: { type: Number, default: 0 },
+    clickCount: { type: Number, default: 1 },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     status: { type: String, enum: ["Active", "Inactive"], default: "Active" },
     createdAt: {

@@ -1,14 +1,16 @@
 .navbar {
   display: flex;
-  padding: 1vw;
+  padding-top: 1vw;
   gap: 10vw;
   font-family: Manrope;
+  height: 10vh;
 }
 
 .rightNavbar {
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
+  gap: 28vw;
   border-bottom: 1px solid #ececf2;
   padding-bottom: 10px;
 }
@@ -46,7 +48,7 @@
 
 .navSearch {
   padding: 13px 14px;
-  margin-right: 5vw;
+  margin-right: 7vw;
   border-radius: 6px;
   text-align: center;
   font-size: 1rem;
@@ -74,8 +76,33 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  /* text-align: end; */
   margin-right: 20px;
   color: #923e0e;
   font-size: 1rem;
   font-weight: 700;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.profileCircle:hover {
+  transform: scale(1.25);
+}
+
+.logout {
+  width: 3vw;
+  /* margin-right: 5vw; */
+}
+
+.logoutBtn {
+  margin-top: 3vh;
+  /* margin-left: 2vw; */
+  /* width: 7vw; */
+  border: 1px solid #ececf2;
+  color: #878ba9;
+  font-family: Manrope;
+  font-size: 1rem;
+  font-weight: 400;
+  background-color: #ffffff;
+  cursor: pointer;
 }

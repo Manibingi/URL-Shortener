@@ -1,5 +1,6 @@
 const UrlSchema = require("../Schema/url.schema");
 const shortid = require("shortid");
+const cron = require("node-cron");
 
 const BASE_URL = "http://short.com/";
 
@@ -124,26 +125,6 @@ exports.getAllLinks = async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
-
-  const { page = 1, limit = 10, search = "" } = req.query;
-
-  // setTimeout(async () => {
-  //   const query = search
-  //     ? { originalUrl: { $regex: search, $options: "i" } }
-  //     : {};
-  //   const urls = await UrlSchema.find(query)
-  //     .limit(limit * 1)
-  //     .skip((page - 1) * limit)
-  //     .exec();
-
-  //   const count = await UrlSchema.countDocuments(query);
-
-  //   res.json({
-  //     urls,
-  //     totalPages: Math.ceil(count / limit),
-  //     currentPage: page,
-  //   });
-  // }, 3000);
 };
 
 // Get a single link by ID
@@ -223,17 +204,147 @@ exports.deleteLink = async (req, res) => {
 // get info from the db
 
 exports.getInfo = async (req, res) => {
-  const userId = req.user.id;
   try {
+    const userId = req.user.id;
+
+    let { page, limit } = req.query;
+
+    page = parseInt(page) || 1; // Default to page 1
+    limit = parseInt(limit) || 5; // Default limit to 5
+
+    if (page < 1 || limit < 1) {
+      return res.status(400).json({ message: "Invalid page or limit" });
+    }
+
+    const totalLinks = await UrlSchema.countDocuments({ userId });
+    const totalPages = Math.ceil(totalLinks / limit);
+
+    if (page > totalPages && totalPages > 0) {
+      page = totalPages;
+    }
+
+    const skip = (page - 1) * limit;
+
     // Fetch all URLs created by the authenticated user
-    const urls = await UrlSchema.find({ userId: req.user._id });
+    const urls = await UrlSchema.find({ userId: userId })
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 }); // Sort by newest first
+
+    res.json({
+      links: urls,
+      totalPages,
+      currentPage: page,
+    });
 
     if (!urls.length) {
       return res.status(404).json({ message: "No links found for this user" });
     }
 
-    res.json(urls);
+    // const currentDate = new Date();
+
+    // Update status based on expiry date
+    // urls = await Promise.all(
+    //   urls.map(async (url) => {
+    //     if (new Date(url.expiryDate) < currentDate) {
+    //       // If expired, update status to "Inactive"
+    //       await UrlSchema.findByIdAndUpdate(url._id, { status: "Inactive" });
+    //       url.status = "Inactive"; // Reflect the change in response
+    //     }
+    //     return url;
+    //   })
+    // );
+    // urls.save();
+
+    // res.json(urls);
   } catch (error) {
     res.status(500).json({ message: "Error retrieving URLs", error });
+    console.log(error);
+  }
+
+  // const userId = req.user.id;
+  // try {
+  //   const page = parseInt(req.query.page) || 1;
+  //   const limit = 10;
+  //   const skip = (page - 1) * limit;
+
+  //   const urls = await UrlSchema.find({ userId: req.user._id })
+  //     .skip(skip)
+  //     .limit(limit);
+  //   const total = await UrlSchema.countDocuments({ userId: req.user._id });
+
+  //   if (!urls.length) {
+  //     return res.status(404).json({ message: "No links found for this user" });
+  //   }
+
+  //   res.json({
+  //     success: true,
+  //     data: urls,
+  //     totalPages: Math.ceil(total / limit),
+  //     currentPage: page,
+  //   });
+  // } catch (error) {
+  //   res.status(500).json({ message: "Error retrieving URLs", error });
+  // }
+};
+
+cron.schedule("0 0 * * *", async () => {
+  try {
+    // Get the current date
+    const currentDate = new Date();
+
+    // Find URLs where expiryDate is in the past and status is still Active
+    const expiredUrls = await UrlSchema.find({
+      expiryDate: { $lt: currentDate },
+      status: "Active",
+    });
+
+    // Update the status of expired URLs to "Inactive"
+    if (expiredUrls.length > 0) {
+      const updatePromises = expiredUrls.map((url) =>
+        UrlSchema.findByIdAndUpdate(url._id, { status: "Inactive" })
+      );
+
+      await Promise.all(updatePromises);
+      console.log(`${expiredUrls.length} URLs have been marked as inactive.`);
+    } else {
+      console.log("No expired URLs found.");
+    }
+  } catch (error) {
+    console.error("Error during cron job execution:", error);
+  }
+});
+
+exports.updateExpiryDate = async (req, res) => {
+  try {
+    const { urlCode, newExpiryDate } = req.body; // Assuming the URL is identified by `urlCode`
+    const currentDate = new Date();
+
+    // Find the URL by its code
+    const url = await UrlSchema.findOne({ urlCode: urlCode });
+
+    if (!url) {
+      return res.status(404).json({ message: "URL not found" });
+    }
+
+    // Update the expiryDate
+    url.expiryDate = new Date(newExpiryDate); // Ensure the new expiry date is in Date format
+
+    // Check if the new expiry date is in the future or in the past
+    if (url.expiryDate < currentDate) {
+      // If expired, set status to "Inactive"
+      url.status = "Inactive";
+    } else {
+      // If the new expiry date is in the future, set status to "Active"
+      url.status = "Active";
+    }
+
+    // Save the updated URL
+    await url.save();
+
+    res.json({ message: "Expiry date updated successfully", url });
+  } catch (error) {
+    console.error("Error updating expiry date:", error);
+    res.status(500).json({ message: "Error updating expiry date", error });
   }
 };

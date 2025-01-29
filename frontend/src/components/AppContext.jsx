@@ -8,7 +8,9 @@ export const AppProvider = ({ children }) => {
   const toggleCreateLink = () => setShowCreateForm((prev) => !prev);
 
   return (
-    <AppContext.Provider value={{ showCreateForm, toggleCreateLink }}>
+    <AppContext.Provider
+      value={{ showCreateForm, toggleCreateLink, setShowCreateForm }}
+    >
       {children}
     </AppContext.Provider>
   );
