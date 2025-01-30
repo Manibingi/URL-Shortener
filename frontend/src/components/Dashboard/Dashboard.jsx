@@ -1,126 +1,146 @@
-import React, { useEffect, useState } from "react";
-import styles from "./Dashboard.module.css";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-// import { toast } from "react-toastify";
+import styles from "./Dashboard.module.css";
 
 const Dashboard = () => {
-  // const [links, setLinks] = useState([]);
-  const [clickData, setClickData] = useState({
+  const [stats, setStats] = useState({
     totalClicks: 0,
-    dailyClicks: [],
+    dateWiseClicks: [],
+    deviceClicks: [],
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [urls, setUrls] = useState([]);
+  const [selectedUrl, setSelectedUrl] = useState("all");
 
-  const fetchClickStats = async () => {
+  useEffect(() => {
+    fetchUrls();
+    fetchDashboardStats();
+  }, []);
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, [selectedUrl]);
+
+  const fetchUrls = async () => {
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.get(
         "http://localhost:8000/api/links/links",
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
-      setClickData(response.data);
-      console.log(clickData);
+      console.log(response.data);
+      setUrls(response.data.links);
     } catch (err) {
-      console.error("Error fetching click stats:", err);
+      console.error("Error fetching URLs:", err);
     }
   };
 
-  useEffect(() => {
-    fetchClickStats();
-  }, []);
+  const fetchDashboardStats = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      let url = "http://localhost:8000/api/links/dashboard";
+      if (selectedUrl !== "all") {
+        url += `?urlId=${selectedUrl}`;
+      }
+
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log(response.data);
+
+      setStats({
+        totalClicks: response.data.totalClicks,
+        dateWiseClicks: response.data.dateWiseClicks,
+        deviceClicks: response.data.deviceClicks,
+      });
+      console.log();
+      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.message || "Error fetching statistics");
+      setLoading(false);
+    }
+  };
+
+  const renderBar = (value, maxValue) => {
+    const percentage = (value / maxValue) * 100;
+    return (
+      <div className={styles.barContainer}>
+        <div className={styles.bar} style={{ width: `${percentage}%` }} />
+      </div>
+    );
+  };
+
+  if (loading) {
+    return <div className={styles.loading}>Loading statistics...</div>;
+  }
+
+  if (error) {
+    return <div className={styles.error}>{error}</div>;
+  }
 
   return (
-    <>
-      <div className={styles.container}>
-        {/* Main Content */}
-        <main className={styles.main}>
-          {/* Stats Section */}
-          <section className={styles.statsSection}>
-            <h2 className={styles.totalClicks}>Total Clicks: 1234</h2>
-
-            <div className={styles.statsGrid}>
-              {/* Date-wise Clicks */}
-              <div className={styles.statsCard}>
-                <h3>Date-wise Clicks</h3>
-                <ul className={styles.clicksList}>
-                  <li>
-                    <span>21-01-25</span>
-                    <div
-                      className={styles.progressBar}
-                      style={{ width: "80%" }}
-                    ></div>
-                    <span>1234</span>
-                  </li>
-                  <li>
-                    <span>20-01-25</span>
-                    <div
-                      className={styles.progressBar}
-                      style={{ width: "70%" }}
-                    ></div>
-                    <span>1140</span>
-                  </li>
-                  <li>
-                    <span>19-01-25</span>
-                    <div
-                      className={styles.progressBar}
-                      style={{ width: "20%" }}
-                    ></div>
-                    <span>134</span>
-                  </li>
-                  <li>
-                    <span>18-01-25</span>
-                    <div
-                      className={styles.progressBar}
-                      style={{ width: "5%" }}
-                    ></div>
-                    <span>34</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Click Devices */}
-              <div className={styles.statsCard}>
-                <h3>Click Devices</h3>
-                <ul className={styles.clicksList}>
-                  <li>
-                    <span>Mobile</span>
-                    <div
-                      className={styles.progressBar}
-                      style={{ width: "50%" }}
-                    ></div>
-                    <span>134</span>
-                  </li>
-                  <li>
-                    <span>Desktop</span>
-                    <div
-                      className={styles.progressBar}
-                      style={{ width: "20%" }}
-                    ></div>
-                    <span>40</span>
-                  </li>
-                  <li>
-                    <span>Tablet</span>
-                    <div
-                      className={styles.progressBar}
-                      style={{ width: "5%" }}
-                    ></div>
-                    <span>3</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </section>
-        </main>
+    <div className={styles.dashboardContainer}>
+      <div className={styles.filterSection}>
+        <select
+          className={styles.urlSelect}
+          value={selectedUrl}
+          onChange={(e) => setSelectedUrl(e.target.value)}
+        >
+          <option value="all">All URLs</option>
+          {urls.map((url) => (
+            <option key={url._id} value={url._id}>
+              {url.shortUrl}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <ul>
-        {clickData.dailyClicks.map((entry, index) => (
-          <li key={index}>
-            {entry.date}: {entry.count} clicks
-          </li>
-        ))}
-      </ul>
-    </>
+      <div className={styles.totalClicksSection}>
+        <span className={styles.totalClicksLabel}>Total Clicks</span>
+        <span className={styles.totalClicksValue}>{stats.totalClicks}</span>
+      </div>
+
+      <div className={styles.chartsContainer}>
+        <div className={styles.chartCard}>
+          <h2 className={styles.chartTitle}>Date-wise Clicks</h2>
+          <div className={styles.chartContent}>
+            {stats.dateWiseClicks.map((item, index) => (
+              <div key={index} className={styles.chartRow}>
+                <div className={styles.label}>{item.date}</div>
+                {renderBar(
+                  item.clicks,
+                  Math.max(...stats.dateWiseClicks.map((item) => item.clicks))
+                )}
+                <div className={styles.value}>{item.clicks}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className={styles.chartCard}>
+          <h2 className={styles.chartTitle}>Click Devices</h2>
+          <div className={styles.chartContent}>
+            {stats.deviceClicks.map((item, index) => (
+              <div key={index} className={styles.chartRow}>
+                <div className={styles.label}>{item.device}</div>
+                {renderBar(
+                  item.clicks,
+                  Math.max(...stats.deviceClicks.map((item) => item.clicks))
+                )}
+                <div className={styles.value}>{item.clicks}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

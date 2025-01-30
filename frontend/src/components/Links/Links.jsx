@@ -14,7 +14,7 @@ const Links = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [deleteId, setDeleteId] = useState(null);
-  const { showCreateForm, setShowCreateForm } = useAppContext();
+  const { showCreateForm, setShowCreateForm, searchTerm } = useAppContext();
   const [showDeleteModel, setShowDeleteModel] = useState(false);
   const [expirationEnabled, setExpirationEnabled] = useState(false);
   const [expiryDate, setexpiryDate] = useState(null);
@@ -27,6 +27,7 @@ const Links = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   // Handle toggle change
   const handleToggleChange = (e) => {
@@ -59,11 +60,16 @@ const Links = () => {
     }
   };
 
+  const filteredRemarks = links.filter((item) =>
+    item.remarks?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   useEffect(() => {
     fetchLinks(currentPage);
   }, [currentPage]);
 
   const fetchLinks = async (page = 1) => {
+    setLoading(true);
     try {
       const response = await axios.get(
         `http://localhost:8000/api/links/links?page=${page}&limit=5`,
@@ -75,10 +81,11 @@ const Links = () => {
       setTotalPages(response.data.totalPages);
       setCurrentPage(response.data.currentPage);
       // fetchLinks(currentPage);
-      console.log(response.data.links);
+      // console.log(response.data.links);
     } catch (error) {
       toast.error("Error fetching links");
     }
+    setLoading(false);
   };
 
   const handlePageChange = (newPage) => {
@@ -95,7 +102,7 @@ const Links = () => {
   const handleCreateUrlSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
+      const response = await axios.post(
         "http://localhost:8000/api/links/links",
         {
           destinationUrl: createUrl.destinationUrl,
@@ -106,9 +113,12 @@ const Links = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
-      toast.success("URL created successfully");
-      resetForm();
-      fetchLinks();
+
+      if (response.data) {
+        toast.success("URL created successfully");
+        resetForm();
+        fetchLinks();
+      }
     } catch (error) {
       toast.error("Error creating URL");
     }
@@ -117,7 +127,7 @@ const Links = () => {
   const handleUpdateCreateUrl = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(
+      const response = await axios.put(
         `http://localhost:8000/api/links/links/${currentId}`,
         {
           destinationUrl: createUrl.destinationUrl,
@@ -128,9 +138,12 @@ const Links = () => {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
-      toast.success("URL updated successfully");
-      resetForm();
-      fetchLinks();
+
+      if (response.data) {
+        toast.success("URL updated successfully");
+        resetForm();
+        fetchLinks();
+      }
     } catch (error) {
       toast.error("Error updating URL");
     }
@@ -142,6 +155,7 @@ const Links = () => {
     setCreateUrl({
       destinationUrl: item.destinationUrl,
       remarks: item.remarks,
+      expiryDate: item.expiryDate,
     });
     setShowCreateForm(true);
   };
@@ -199,208 +213,218 @@ const Links = () => {
 
   return (
     <>
-      <div className={styles.container}>
-        <h1>Links</h1>
-        <div className={styles.linksContainer}>
-          <table className={styles.tableContainer}>
-            <thead className={styles.tableHeader}>
-              <tr>
-                <th>Date</th>
-                <th className={styles.originalLink}>Original Link</th>
-                <th className={styles.shortLink}>Short Link</th>
-                <th>Remarks</th>
-                <th>Clicks</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {links.map((item) => (
-                <tr key={item._id} className={styles.tableRow}>
-                  <td>{formatDate(new Date(item.createdAt))}</td>
-                  <td>
-                    <div className={styles.original}>{item.destinationUrl}</div>
-                  </td>
-                  <td className={styles.shortEdit}>
-                    <div className={styles.short}>{item.shortUrl}</div>
-                    <span
-                      className={styles.copyIcon}
-                      onClick={() => handleCopy(item.shortUrl)}
-                    >
-                      📋
-                    </span>
-                  </td>
-                  <td className={styles.remarks}>{item.remarks}</td>
-                  <td className={styles.clicks}>{item.clickCount}</td>
-                  <td className={styles.status}>
-                    <span
-                      className={
-                        item.status === "Active"
-                          ? styles.active
-                          : styles.inactive
-                      }
-                    >
-                      {item.status}
-                    </span>
-                  </td>
-                  <td className={styles.btns}>
-                    <button
-                      className={styles.editButton}
-                      onClick={() => updateId(item)}
-                    >
-                      <i className="fa-solid fa-pen"></i>
-                    </button>
-                    <button
-                      className={styles.deleteButton}
-                      onClick={() => deleteID(item)}
-                    >
-                      <i className="fa-solid fa-trash-can"></i>
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {filteredRemarks.length > 0 ? (
+        <div className={styles.container}>
+          <h1>Links</h1>
+          <div className={styles.linksContainer}>
+            {loading ? (
+              <p>Loading...</p>
+            ) : (
+              <table className={styles.tableContainer}>
+                <thead className={styles.tableHeader}>
+                  <tr>
+                    <th>Date</th>
+                    <th className={styles.originalLink}>Original Link</th>
+                    <th className={styles.shortLink}>Short Link</th>
+                    <th>Remarks</th>
+                    <th>Clicks</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredRemarks.map((item) => (
+                    <tr key={item._id} className={styles.tableRow}>
+                      <td>{formatDate(new Date(item.createdAt))}</td>
+                      <td>
+                        <div className={styles.original}>
+                          {item.destinationUrl}
+                        </div>
+                      </td>
+                      <td className={styles.shortEdit}>
+                        <div className={styles.short}>{item.shortUrl}</div>
+                        <span
+                          className={styles.copyIcon}
+                          onClick={() => handleCopy(item.shortUrl)}
+                        >
+                          📋
+                        </span>
+                      </td>
+                      <td className={styles.remarks}>{item.remarks}</td>
+                      <td className={styles.clicks}>{item.clickCount}</td>
+                      <td className={styles.status}>
+                        <span
+                          className={
+                            item.status === "Active"
+                              ? styles.active
+                              : styles.inactive
+                          }
+                        >
+                          {item.status}
+                        </span>
+                      </td>
+                      <td className={styles.btns}>
+                        <button
+                          className={styles.editButton}
+                          onClick={() => updateId(item)}
+                        >
+                          <i className="fa-solid fa-pen"></i>
+                        </button>
+                        <button
+                          className={styles.deleteButton}
+                          onClick={() => deleteID(item)}
+                        >
+                          <i className="fa-solid fa-trash-can"></i>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
 
-        {showCreateForm && (
-          <div className={styles.createLinkModel}>
-            <div className={styles.CreatelinksContainer}>
-              <div className={styles.createLinkhead}>
-                <span className={styles.newSpan}>
-                  {isEditing ? "Edit Link" : "New Link"}
-                </span>
-                <span className={styles.crossSpan} onClick={resetForm}>
-                  X
-                </span>
+          {showDeleteModel && (
+            <div className={styles.overlay}>
+              <div className={styles.deleteModel}>
+                <span onClick={resetForm}>x</span>
+                <div className={styles.deleteContent}>
+                  <p> Are you sure, you want to remove it ? </p>
+                  <div className={styles.deleteModelBtns}>
+                    <button className={styles.noBtn} onClick={resetForm}>
+                      NO
+                    </button>
+                    <button className={styles.yesBtn} onClick={deleteUrl}>
+                      YES
+                    </button>
+                  </div>
+                </div>
               </div>
-              <form
-                onSubmit={
-                  isEditing ? handleUpdateCreateUrl : handleCreateUrlSubmit
-                }
-                className={styles.createForm}
-              >
-                <div className={styles.Urlinput}>
-                  <label htmlFor="originalUrl">
-                    Destination URL <span>*</span>
-                  </label>
+            </div>
+          )}
+
+          {/* Pagination Controls */}
+          <div className={styles.pagination}>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      ) : (
+        <p>No results found.</p>
+      )}
+
+      {showCreateForm && (
+        <div className={styles.createLinkModel}>
+          <div className={styles.CreatelinksContainer}>
+            <div className={styles.createLinkhead}>
+              <span className={styles.newSpan}>
+                {isEditing ? "Edit Link" : "New Link"}
+              </span>
+              <span className={styles.crossSpan} onClick={resetForm}>
+                X
+              </span>
+            </div>
+            <form
+              onSubmit={
+                isEditing ? handleUpdateCreateUrl : handleCreateUrlSubmit
+              }
+              className={styles.createForm}
+            >
+              <div className={styles.Urlinput}>
+                <label htmlFor="originalUrl">
+                  Destination URL <span>*</span>
+                </label>
+                <input
+                  type="text"
+                  name="destinationUrl"
+                  value={createUrl.destinationUrl}
+                  onChange={handleCreateUrl}
+                  placeholder="https://web.whatsapp.com/"
+                  required
+                />
+              </div>
+              <div className={styles.Urlinput}>
+                <label htmlFor="remarks">
+                  Remarks <span>*</span>
+                </label>
+                <textarea
+                  name="remarks"
+                  value={createUrl.remarks}
+                  onChange={handleCreateUrl}
+                  placeholder="Add remarks"
+                  required
+                />
+              </div>
+
+              <div className={styles.toggle}>
+                <p>Link Expiration</p>
+                <label className={styles.switch}>
+                  <input
+                    type="checkbox"
+                    checked={expirationEnabled}
+                    onChange={handleToggleChange}
+                  />
+                  <span className={`${styles.slider} ${styles.round}`}></span>
+                </label>
+              </div>
+
+              {expirationEnabled && (
+                <div className={styles.dateTimeContainer}>
                   <input
                     type="text"
-                    name="destinationUrl"
-                    value={createUrl.destinationUrl}
-                    onChange={handleCreateUrl}
-                    placeholder="https://web.whatsapp.com/"
-                    required
+                    value={expiryDate ? formatDate(expiryDate) : ""}
+                    readOnly
+                    className="dateDisplay"
                   />
-                </div>
-                <div className={styles.Urlinput}>
-                  <label htmlFor="remarks">
-                    Remarks <span>*</span>
-                  </label>
-                  <textarea
-                    name="remarks"
-                    value={createUrl.remarks}
-                    onChange={handleCreateUrl}
-                    placeholder="Add remarks"
-                    required
+                  <FiCalendar
+                    className={styles.calendarIcon}
+                    onClick={() => setShowDatePicker((prev) => !prev)}
                   />
-                </div>
-
-                <div className={styles.toggle}>
-                  <p>Link Expiration</p>
-                  <label className={styles.switch}>
-                    <input
-                      type="checkbox"
-                      checked={expirationEnabled}
-                      onChange={handleToggleChange}
+                  {showDatePicker && (
+                    <DatePicker
+                      selected={selectedDate}
+                      onChange={(date) => {
+                        handleDateChange(date);
+                        setShowDatePicker(false);
+                      }}
+                      dateFormat="Pp"
+                      minDate={new Date()}
+                      block
+                      className="datepicker"
                     />
-                    <span className={`${styles.slider} ${styles.round}`}></span>
-                  </label>
+                  )}
                 </div>
+              )}
 
-                {expirationEnabled && (
-                  <div className={styles.dateTimeContainer}>
-                    <input
-                      type="text"
-                      value={expiryDate ? formatDate(expiryDate) : ""}
-                      readOnly
-                      className="dateDisplay"
-                    />
-                    <FiCalendar
-                      className={styles.calendarIcon}
-                      onClick={() => setShowDatePicker((prev) => !prev)}
-                    />
-                    {showDatePicker && (
-                      <DatePicker
-                        selected={selectedDate}
-                        onChange={(date) => {
-                          handleDateChange(date);
-                          setShowDatePicker(false);
-                        }}
-                        dateFormat="Pp"
-                        minDate={new Date()}
-                        block
-                        className="datepicker"
-                      />
-                    )}
-                  </div>
-                )}
-
-                <div className={styles.createUrlBtns}>
-                  <button
-                    type="button"
-                    className={styles.clearBtn}
-                    onClick={resetForm}
-                  >
-                    Clear
-                  </button>
-                  <button type="submit" className={styles.createBtn}>
-                    {isEditing ? "Save" : "Create new"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
-
-        {showDeleteModel && (
-          <div className={styles.overlay}>
-            <div className={styles.deleteModel}>
-              <span onClick={resetForm}>x</span>
-              <div className={styles.deleteContent}>
-                <p> Are you sure, you want to remove it ? </p>
-                <div className={styles.deleteModelBtns}>
-                  <button className={styles.noBtn} onClick={resetForm}>
-                    NO
-                  </button>
-                  <button className={styles.yesBtn} onClick={deleteUrl}>
-                    YES
-                  </button>
-                </div>
+              <div className={styles.createUrlBtns}>
+                <button
+                  type="button"
+                  className={styles.clearBtn}
+                  onClick={resetForm}
+                >
+                  Clear
+                </button>
+                <button type="submit" className={styles.createBtn}>
+                  {isEditing ? "Save" : "Create new"}
+                </button>
               </div>
-            </div>
+            </form>
           </div>
-        )}
-
-        {/* Pagination Controls */}
-        <div className={styles.pagination}>
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
         </div>
-      </div>
+      )}
     </>
   );
 };

@@ -10,23 +10,15 @@ function Header() {
   const { toggleCreateLink } = useAppContext();
   const [showLogout, setShowLogout] = useState(false);
   const [name, setName] = useState("");
+  const [greeting, setGreeting] = useState("");
+
+  const { searchTerm, setSearchTerm } = useAppContext();
 
   const navigate = useNavigate();
 
-  // const [page, setPage] = useState(1);
-  // const [search, setSearch] = useState("");
-
-  // const fetchData = async () => {
-  //   const response = await axios.get(
-  //     `http://localhost:8000/api/links/links?page=${page}&search=${search}`
-  //   );
-  //   const data = await response.json();
-  //   // Handle the data (e.g., set state to display the URLs)
-  // };
-
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [greeting]);
 
   const fetchUser = async () => {
     try {
@@ -42,6 +34,15 @@ function Header() {
       });
     } catch (error) {
       console.log("Failed to fetch user data", error);
+    }
+
+    if (d.getHours() >= 0 && d.getHours() < 12) {
+      setGreeting("morning");
+    }
+    if (d.getHours() >= 12 && d.getHours() < 16) {
+      setGreeting("afternoon");
+    } else {
+      setGreeting("evening");
     }
   };
 
@@ -67,8 +68,13 @@ function Header() {
         </div>
         <div className={style.rightNavbar}>
           <div className={style.profileName}>
-            <span>Good morning, {name.name}</span>
-            <p>{formattedDate}</p>
+            <span>☀️</span>
+            <div>
+              <span>
+                Good {greeting}, {name.name}
+              </span>
+              <p>{formattedDate}</p>
+            </div>
           </div>
           <div className={style.navActon}>
             <button className={style.createButton} onClick={toggleCreateLink}>
@@ -80,6 +86,8 @@ function Header() {
                 type="text"
                 placeholder="Search by remarks"
                 className={style.navSearch}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
             {showLogout && (

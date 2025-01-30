@@ -36,7 +36,7 @@ exports.shortenUrl = async (req, res) => {
         shortUrl,
         urlCode,
         remarks,
-        clickCount: 1,
+
         expiryDate: expiration,
         userId,
         status: "Active",
@@ -97,6 +97,7 @@ exports.redirectUrl = async (req, res) => {
     // Extract device type and IP address
     // const deviceType = req.device.type || "Desktop"; // Use express-device to get device type
     const deviceType = req.device.parser.useragent.family || "Desktop";
+    // const deviceType = req.device.type || "Desktop";
     const ipAddress =
       req.headers["x-forwarded-for"] || req.socket.remoteAddress; // Get IP address
 

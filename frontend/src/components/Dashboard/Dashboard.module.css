@@ -1,164 +1,153 @@
-/* General Container */
-.container {
-  display: flex;
-  min-height: 100vh;
-  background-color: #f9f9f9;
+.dashboardContainer {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* Sidebar */
-.sidebar {
-  width: 340px;
-  background-color: #ffffff;
-  border-right: 1px solid #e5e5e5;
+.filterSection {
+  margin-bottom: 20px;
+}
+
+.urlSelect {
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  font-size: 14px;
+  min-width: 200px;
+  background-color: white;
+}
+
+.totalClicksSection {
+  margin-bottom: 24px;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 12px;
+}
+
+.totalClicksLabel {
+  color: #000;
+  font-size: 16px;
+  margin-right: 8px;
+}
+
+.totalClicksValue {
+  color: #0066ff;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.chartsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.chartCard {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.chartTitle {
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 24px 0;
+}
+
+.chartContent {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  gap: 16px;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #0056d2;
-  margin-bottom: 40px;
-}
-
-.nav ul {
-  list-style: none;
-  padding: 0;
-}
-
-.nav li {
-  font-size: 18px;
-  font-weight: 600;
-  color: #555;
-  margin-bottom: 20px;
-  cursor: pointer;
-  height: 45px;
-  padding: 12px;
-  padding-left: 20px;
-  border-radius: 10px;
-}
-
-.nav li:active {
-  background-color: #f3f7fd;
-}
-
-.nav li.list {
-  color: #0056d2;
-}
-
-.nav li.list img {
-  /* background: #0056d2; */
-}
-
-/* Main Content */
-.main {
-  flex: 1;
-  padding: 20px;
-}
-
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.greeting {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.date {
-  font-size: 14px;
-  color: #999;
-}
-
-.createButton {
-  background-color: #0056d2;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.searchInput {
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-right: 10px;
-}
-
-.profileIcon {
-  width: 40px;
-  height: 40px;
-  background-color: #ffcc00;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  font-weight: bold;
-}
-
-/* Stats Section */
-.statsSection {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.totalClicks {
-  font-size: 20px;
-  margin-bottom: 20px;
-}
-
-.statsGrid {
+.chartRow {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.statsCard {
-  background-color: #f9f9f9;
-  padding: 15px;
-  border: 1px solid #e5e5e5;
-  border-radius: 8px;
-}
-
-.clicksList {
-  list-style: none;
-  padding: 0;
-}
-
-.clicksList li {
-  display: flex;
+  grid-template-columns: 80px 1fr 60px;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  gap: 16px;
 }
 
-.progressBar {
-  background-color: #0056d2;
-  height: 8px;
-  border-radius: 4px;
-  flex-grow: 1;
-  margin: 0 10px;
+.label {
+  color: #000;
+  font-size: 14px;
 }
 
-/* Responsive Design */
+.value {
+  color: #000;
+  font-size: 14px;
+  text-align: right;
+}
+
+.barContainer {
+  height: 12px;
+  background-color: #f3f4f6;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background-color: #0066ff;
+  border-radius: 6px;
+  transition: width 0.3s ease;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 16px;
+  color: #666;
+}
+
+.error {
+  color: #dc2626;
+  text-align: center;
+  padding: 20px;
+}
+
 @media (max-width: 768px) {
-  .statsGrid {
+  .chartsContainer {
     grid-template-columns: 1fr;
   }
 
-  .sidebar {
-    display: none;
+  .chartRow {
+    grid-template-columns: 70px 1fr 50px;
+    gap: 12px;
   }
 
-  .container {
-    flex-direction: column;
+  .chartCard {
+    padding: 20px;
+  }
+
+  .label,
+  .value {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboardContainer {
+    padding: 16px;
+  }
+
+  .urlSelect {
+    width: 100%;
+  }
+
+  .chartCard {
+    padding: 16px;
+  }
+
+  .chartRow {
+    grid-template-columns: 60px 1fr 45px;
+    gap: 8px;
+  }
+
+  .label,
+  .value {
+    font-size: 12px;
   }
 }
