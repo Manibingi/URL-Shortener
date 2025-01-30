@@ -72,8 +72,8 @@ const Register = () => {
               Login
             </button>
           </div>
-          <div className={style.registerForm_contant}>
-            <div className={style.join_us}>
+          <div className={style.registerFormContent}>
+            <div className={style.joinUs}>
               <p>Join us Today!</p>
             </div>
 
@@ -88,6 +88,7 @@ const Register = () => {
                 placeholder="Name"
                 value={registerForm.name}
                 onChange={handleRegisterForm}
+                required
               />
               <br />
               <input
@@ -97,6 +98,7 @@ const Register = () => {
                 placeholder="Email id"
                 value={registerForm.email}
                 onChange={handleRegisterForm}
+                required
               />
               <br />
               <input
@@ -106,6 +108,7 @@ const Register = () => {
                 placeholder="Mobile no."
                 value={registerForm.mobile}
                 onChange={handleRegisterForm}
+                required
               />
               <br />
               <input
@@ -115,21 +118,37 @@ const Register = () => {
                 placeholder="Password"
                 value={registerForm.password}
                 onChange={handleRegisterForm}
+                required
               />
               <br />
-              <input
-                type="password"
-                name="confirmpassword"
-                id="confirmpassword"
-                placeholder="Confirm Password"
-                value={registerForm.confirmpassword}
-                onChange={handleRegisterForm}
-              />
+              <div
+                className={
+                  registerForm.password !== registerForm.confirmpassword
+                    ? style.Error
+                    : style.registerInput
+                }
+              >
+                <input
+                  type="password"
+                  name="confirmpassword"
+                  id="confirmpassword"
+                  placeholder="Confirm Password"
+                  value={registerForm.confirmpassword}
+                  required
+                  className={style.input}
+                  onChange={handleRegisterForm}
+                />
+                {registerForm.password !== registerForm.confirmpassword ? (
+                  <p className={style.paraError}>Password does not match</p>
+                ) : (
+                  <div className={style.noerror}></div>
+                )}
+              </div>
               <br />
               <button type="submit">Register</button>
             </form>
 
-            <div className={style.already_have_account}>
+            <div className={style.alreadyHaveAccount}>
               <p>
                 Already have an account? <Link to={"/login"}>Login</Link>
               </p>

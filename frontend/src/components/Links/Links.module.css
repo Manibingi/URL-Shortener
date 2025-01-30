@@ -5,6 +5,10 @@ td {
   border-collapse: collapse;
 }
 
+.linksContainer {
+  margin-top: 20px;
+}
+
 .tableContainer {
   width: 100%;
   border-collapse: separate;
@@ -330,6 +334,108 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.errorInput {
+  border-color: #dc2626;
+  /* background-color: #fff5f5; */
+}
+
+.errorMessage {
+  /* display: block; */
+  color: #dc2626;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* delete showmodel */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black */
+  /* backdrop-filter: blur(4px); */
+  z-index: 998;
+}
+
+.deleteModel {
+  /* position: absolute;
+  background-color: #FFFFFF;
+  width: 30vw;
+  height: 30vh;
+  padding: 10px;
+  border-radius: 6px; */
+  position: fixed; /* change from absolute to fixed */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #ffffff;
+  width: 30vw;
+  height: 30vh;
+  padding: 10px;
+  border-radius: 6px;
+  z-index: 999; /* ensure modal appears above overlay */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.deleteModel span {
+  float: right;
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+.deleteModel span:hover {
+  color: red;
+}
+
+.deleteContent {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: Manrope;
+  gap: 5vh;
+}
+
+.deleteContent p {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.deleteModelBtns {
+  display: flex;
+  gap: 1vw;
+}
+
+.deleteModelBtns button {
+  /* background-color: blue; */
+  padding: 1.2vh 4.5vw;
+  border: none;
+  outline: none;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.noBtn {
+  background-color: #ececee;
+  color: #000000;
+  transition: 0.3s;
+}
+
+.yesBtn {
+  background-color: #1b48da;
+  color: #ffffff;
+  transition: 0.3s;
+}
+
+.noBtn:hover,
+.yesBtn:hover {
+  transform: scale(1.05);
 }
 
 .pagination {

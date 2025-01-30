@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -46,6 +46,15 @@ const Login = () => {
     }
   };
 
+  // if user already logged in
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      toast.success("User Already Logged In");
+      navigate("/main");
+    }
+  }, []);
+
   return (
     <>
       <div className={style.registerContainer}>
@@ -61,8 +70,8 @@ const Login = () => {
             </button>
             <button className={style.loginBtn}>Login</button>
           </div>
-          <div className={style.registerForm_contant}>
-            <div className={style.join_us}>
+          <div className={style.registerFormContent}>
+            <div className={style.joinUs}>
               <p>Login</p>
             </div>
 
@@ -74,6 +83,7 @@ const Login = () => {
                 placeholder="Email id"
                 value={loginForm.email}
                 onChange={handleLoginForm}
+                required
               />
               <br />
               <input
@@ -83,12 +93,13 @@ const Login = () => {
                 placeholder="Password"
                 value={loginForm.password}
                 onChange={handleLoginForm}
+                required
               />
               <br />
               <button type="submit">Login</button>
             </form>
 
-            <div className={style.already_have_account}>
+            <div className={style.alreadyHaveAccount}>
               <p>
                 Don't have an account? <Link to={"/"}>SignUp</Link>
               </p>

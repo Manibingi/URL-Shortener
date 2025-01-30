@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 const Settings = () => {
   const navigate = useNavigate();
+  const [showDeleteModel, setShowDeleteModel] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -62,9 +63,7 @@ const Settings = () => {
       });
 
       // If email is updated, logout user
-      console.log(updateUser.email);
-      console.log(formData.email);
-      if (updateUser.email !== formData.email) {
+      if (updateUser.email) {
         logout();
       }
     } catch (error) {
@@ -89,11 +88,16 @@ const Settings = () => {
       );
 
       toast.success("user account deleted successfully");
+      localStorage.removeItem("token");
       navigate("/login");
     } catch (error) {
       console.log("error in deleting user account", error);
       toast.error("error in deleting user account");
     }
+  };
+
+  const resetForm = () => {
+    setShowDeleteModel(false);
   };
 
   return (
@@ -140,12 +144,41 @@ const Settings = () => {
               </button>
             </div>
             <div>
-              <button className={style.deleteBtn} onClick={deleteUser}>
+              <button
+                type="button"
+                className={style.deleteBtn}
+                onClick={() => setShowDeleteModel(true)}
+              >
                 Delete Account
               </button>
             </div>
           </div>
         </form>
+        {/* <div
+          onClick={() => setShowDeleteModel(true)}
+          className={style.DelAccountBtn}
+        >
+          <button className={style.deleteBtn}>Delete Account</button>
+        </div> */}
+
+        {showDeleteModel && (
+          <div className={style.overlay}>
+            <div className={style.deleteModel}>
+              <span onClick={resetForm}>x</span>
+              <div className={style.deleteContent}>
+                <p> Are you sure, you want to Delete Account ? </p>
+                <div className={style.deleteModelBtns}>
+                  <button className={style.noBtn} onClick={resetForm}>
+                    NO
+                  </button>
+                  <button className={style.yesBtn} onClick={deleteUser}>
+                    YES
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

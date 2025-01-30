@@ -60,7 +60,7 @@
 
 /* registerForm */
 
-.registerForm_contant {
+.registerFormContent {
   display: flex;
   flex-direction: column;
   gap: 3vh;
@@ -68,7 +68,7 @@
   margin: 5vh;
 }
 
-.join_us p {
+.joinUs p {
   font-family: Manrope;
   font-size: 1.2rem;
   font-weight: 600;
@@ -107,7 +107,7 @@
   transform: scale(1.02);
 }
 
-.already_have_account p {
+.alreadyHaveAccount p {
   font-family: Manrope;
   font-size: 1.2rem;
   font-weight: 400;
@@ -115,10 +115,51 @@
   margin-top: 10px;
 }
 
-.already_have_account a {
+.alreadyHaveAccount a {
   font-family: Manrope;
   font-size: 1.2rem;
   font-weight: 400;
   color: #1b48da;
   text-decoration: none;
+}
+
+/* error if passsword does not match */
+
+.Error {
+  color: red;
+}
+.Error input {
+  border: 1px solid red;
+}
+
+.paraError {
+  border: blue;
+  height: 2vh;
+}
+
+.noerror {
+  height: 2vh;
+}
+
+.input {
+  margin-bottom: 10px;
+}
+@media screen and (max-width: 768px) {
+  .leftContainer {
+    display: none;
+  }
+
+  .rightContainer {
+    width: 100%;
+  }
+  .buttons {
+    display: flex;
+
+    gap: 30vw;
+    width: 100%;
+    align-items: center;
+  }
+  .rightContainer input {
+    width: 100%;
+  }
 }

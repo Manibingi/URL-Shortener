@@ -203,6 +203,65 @@ exports.deleteLink = async (req, res) => {
 
 // get info from the db
 
+exports.getAnalytics = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    let { page, limit } = req.query;
+
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 5;
+
+    if (page < 1 || limit < 1) {
+      return res.status(400).json({ message: "Invalid page or limit" });
+    }
+
+    // Fetch all links for the user
+    const allLinks = await UrlSchema.find({ userId }).sort({ createdAt: -1 });
+
+    // Flatten device details for pagination
+    let allClicks = [];
+    allLinks.forEach((link) => {
+      link.deviceDetails.forEach((device) => {
+        allClicks.push({
+          shortUrl: link.shortUrl,
+          destinationUrl: link.destinationUrl,
+          createdAt: device.clickedAt || link.createdAt, // Use device click time
+          ipAddress: device.ipAddress || "N/A",
+          deviceType: device.deviceType || "N/A",
+        });
+      });
+    });
+
+    // Get total count of clicks (not links)
+    const totalClicks = allClicks.length;
+    const totalPages = Math.ceil(totalClicks / limit);
+
+    // Ensure `page` is within valid range
+    if (page > totalPages && totalPages > 0) {
+      page = totalPages;
+    }
+
+    // Paginate based on clicks
+    const startIndex = (page - 1) * limit;
+    const paginatedClicks = allClicks.slice(startIndex, startIndex + limit);
+
+    if (!paginatedClicks.length) {
+      return res.status(404).json({ message: "No click data found" });
+    }
+
+    return res.json({
+      clicks: paginatedClicks,
+      totalPages: totalPages > 0 ? totalPages : 1,
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error("Error retrieving analytics:", error);
+    return res
+      .status(500)
+      .json({ message: "Error retrieving analytics", error });
+  }
+};
+
 exports.getInfo = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -231,61 +290,19 @@ exports.getInfo = async (req, res) => {
       .limit(limit)
       .sort({ createdAt: -1 }); // Sort by newest first
 
+    if (!urls.length) {
+      return res.status(404).json({ message: "No links found for this user" });
+    }
+
     res.json({
       links: urls,
       totalPages,
       currentPage: page,
     });
-
-    if (!urls.length) {
-      return res.status(404).json({ message: "No links found for this user" });
-    }
-
-    // const currentDate = new Date();
-
-    // Update status based on expiry date
-    // urls = await Promise.all(
-    //   urls.map(async (url) => {
-    //     if (new Date(url.expiryDate) < currentDate) {
-    //       // If expired, update status to "Inactive"
-    //       await UrlSchema.findByIdAndUpdate(url._id, { status: "Inactive" });
-    //       url.status = "Inactive"; // Reflect the change in response
-    //     }
-    //     return url;
-    //   })
-    // );
-    // urls.save();
-
-    // res.json(urls);
   } catch (error) {
     res.status(500).json({ message: "Error retrieving URLs", error });
     console.log(error);
   }
-
-  // const userId = req.user.id;
-  // try {
-  //   const page = parseInt(req.query.page) || 1;
-  //   const limit = 10;
-  //   const skip = (page - 1) * limit;
-
-  //   const urls = await UrlSchema.find({ userId: req.user._id })
-  //     .skip(skip)
-  //     .limit(limit);
-  //   const total = await UrlSchema.countDocuments({ userId: req.user._id });
-
-  //   if (!urls.length) {
-  //     return res.status(404).json({ message: "No links found for this user" });
-  //   }
-
-  //   res.json({
-  //     success: true,
-  //     data: urls,
-  //     totalPages: Math.ceil(total / limit),
-  //     currentPage: page,
-  //   });
-  // } catch (error) {
-  //   res.status(500).json({ message: "Error retrieving URLs", error });
-  // }
 };
 
 cron.schedule("0 0 * * *", async () => {
