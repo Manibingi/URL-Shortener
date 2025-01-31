@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Settings = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [showDeleteModel, setShowDeleteModel] = useState(false);
   const [formData, setFormData] = useState({
@@ -24,12 +25,9 @@ const Settings = () => {
   // fetching the user data from the dackend
   const fetchUser = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/auth/getUser",
-        {
-          headers: { Authorization: `${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await axios.get(`${apiUrl}/api/auth/getUser`, {
+        headers: { Authorization: `${localStorage.getItem("token")}` },
+      });
       const userData = response.data.user;
       setFormData({
         name: userData.name,
@@ -51,7 +49,7 @@ const Settings = () => {
 
     try {
       const response = await axios.put(
-        "http://localhost:8000/api/auth/updateUser",
+        `${apiUrl}/api/auth/updateUser`,
         updateUser,
         {
           headers: { Authorization: `${localStorage.getItem("token")}` },
@@ -80,12 +78,9 @@ const Settings = () => {
   // delete the user
   const deleteUser = async () => {
     try {
-      const response = await axios.delete(
-        "http://localhost:8000/api/auth/deleteUser",
-        {
-          headers: { Authorization: `${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await axios.delete(`${apiUrl}/api/auth/deleteUser`, {
+        headers: { Authorization: `${localStorage.getItem("token")}` },
+      });
 
       toast.success("user account deleted successfully");
       localStorage.removeItem("token");

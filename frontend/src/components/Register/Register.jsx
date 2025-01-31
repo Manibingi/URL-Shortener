@@ -6,6 +6,7 @@ import style from "./Register.module.css";
 import logo from "../../assets/cuvette.svg";
 
 const Register = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [registerForm, setRegisterForm] = useState({
     name: "",
@@ -32,7 +33,7 @@ const Register = () => {
     // sending the Registerform data to the backend
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/auth/register",
+        `${apiUrl}/api/auth/register`,
         registerForm
       );
 

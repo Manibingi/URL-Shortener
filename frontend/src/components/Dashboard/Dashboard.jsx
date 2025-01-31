@@ -3,6 +3,7 @@ import axios from "axios";
 import styles from "./Dashboard.module.css";
 
 const Dashboard = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const [stats, setStats] = useState({
     totalClicks: 0,
     dateWiseClicks: [],
@@ -25,15 +26,11 @@ const Dashboard = () => {
   const fetchUrls = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get(
-        "http://localhost:8000/api/links/links",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log(response.data);
+      const response = await axios.get(`${apiUrl}/api/links/links`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setUrls(response.data.links);
     } catch (err) {
       console.error("Error fetching URLs:", err);
@@ -43,7 +40,7 @@ const Dashboard = () => {
   const fetchDashboardStats = async () => {
     try {
       const token = localStorage.getItem("token");
-      let url = "http://localhost:8000/api/links/dashboard";
+      let url = `${apiUrl}/api/links/dashboard`;
       if (selectedUrl !== "all") {
         url += `?urlId=${selectedUrl}`;
       }
@@ -53,14 +50,12 @@ const Dashboard = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
 
       setStats({
         totalClicks: response.data.totalClicks,
         dateWiseClicks: response.data.dateWiseClicks,
         deviceClicks: response.data.deviceClicks,
       });
-      console.log();
       setLoading(false);
     } catch (err) {
       setError(err.response?.data?.message || "Error fetching statistics");

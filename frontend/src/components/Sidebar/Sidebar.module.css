@@ -73,3 +73,199 @@
   font-size: 1rem;
   font-weight: 600;
 }
+
+/* Large screens (1200px and up) */
+@media screen and (min-width: 1200px) {
+  .sideBar {
+    width: 15vw;
+  }
+
+  .outlet {
+    width: 85vw;
+  }
+}
+
+/* Medium screens (992px to 1199px) */
+@media screen and (max-width: 1199px) {
+  .sideBar {
+    width: 20vw;
+  }
+
+  .outlet {
+    width: 80vw;
+  }
+}
+
+/* Tablets (768px to 991px) */
+@media screen and (max-width: 991px) {
+  .sideBar {
+    width: 25vw;
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .outlet {
+    width: 75vw;
+  }
+
+  .link p,
+  .analytics p,
+  .dashboard p,
+  .setting p {
+    font-size: 0.9rem;
+  }
+
+  .link i,
+  .analytics i,
+  .dashboard i,
+  .setting i {
+    font-size: 1.1rem;
+  }
+
+  .setting {
+    padding: 4vh;
+    margin-top: 3vh;
+  }
+}
+
+/* Small tablets and large phones (576px to 767px) */
+@media screen and (max-width: 767px) {
+  .sideBar {
+    width: 30vw;
+    padding: 12px;
+  }
+
+  .outlet {
+    width: 70vw;
+  }
+
+  .link p,
+  .analytics p,
+  .dashboard p,
+  .setting p {
+    font-size: 0.85rem;
+  }
+}
+
+/* Mobile phones (575px and below) */
+@media screen and (max-width: 575px) {
+  .sidebarParent {
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .sideBar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #ececf2;
+    padding: 10px 5px;
+    gap: 8px;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .outlet {
+    width: 100%;
+    height: calc(100vh - 60px); /* Adjust based on your sidebar height */
+    overflow-y: auto;
+  }
+
+  .link,
+  .analytics,
+  .dashboard {
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .link p,
+  .analytics p,
+  .dashboard p {
+    font-size: 0.75rem;
+    margin: 0;
+  }
+
+  .link i,
+  .analytics i,
+  .dashboard i {
+    position: static;
+    font-size: 0.9rem;
+  }
+
+  .setting {
+    margin-top: 0;
+    padding: 8px;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .setting i {
+    position: static;
+    font-size: 0.9rem;
+  }
+
+  .setting p {
+    font-size: 0.75rem;
+    margin: 0;
+  }
+}
+
+/* Very small devices */
+@media screen and (max-width: 320px) {
+  .sideBar {
+    padding: 8px 2px;
+    gap: 5px;
+  }
+
+  .link p,
+  .analytics p,
+  .dashboard p,
+  .setting p {
+    font-size: 0.7rem;
+  }
+
+  .link i,
+  .analytics i,
+  .dashboard i,
+  .setting i {
+    font-size: 0.85rem;
+  }
+}
+
+/* Landscape mode for mobile */
+@media screen and (max-height: 480px) and (orientation: landscape) {
+  .sidebarParent {
+    flex-direction: row;
+  }
+
+  .sideBar {
+    width: 60px;
+    flex-direction: column;
+    padding: 10px 5px;
+  }
+
+  .outlet {
+    width: calc(100% - 60px);
+  }
+
+  .link p,
+  .analytics p,
+  .dashboard p,
+  .setting p {
+    display: none;
+  }
+
+  .link i,
+  .analytics i,
+  .dashboard i,
+  .setting i {
+    font-size: 1rem;
+  }
+}

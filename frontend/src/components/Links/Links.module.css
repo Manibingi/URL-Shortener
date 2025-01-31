@@ -145,12 +145,26 @@ td {
 
 /* model */
 
+.createContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 998;
+}
+
 .createLinkModel {
-  /* margin-top: 5vh; */
   position: absolute;
   background-color: #ffffff;
   width: 35vw;
-  top: 0;
+  height: 85vh;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
 }
 
 .createLinkhead {
@@ -183,6 +197,13 @@ td {
   flex-direction: column;
   gap: 3vh;
   /* background-color: red; */
+}
+
+.input_style {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 3vh;
 }
 
 .Urlinput {
@@ -237,10 +258,18 @@ td {
 .dateTimeContainer {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   border: 1px solid #d1d5db;
   padding: 10px;
   border-radius: 6px;
+  height: 7vh;
+  cursor: pointer;
 }
+
+.emptyHeight {
+  height: 7vh;
+}
+
 .dateTimeContainer input {
   background: transparent;
   border: none;
@@ -256,6 +285,8 @@ td {
   align-items: center;
   margin-top: 12vh;
   background-color: #3b3c511a;
+  border-bottom-left-radius: 12px;
+  padding: 10px;
 }
 
 .createBtn {
@@ -267,12 +298,24 @@ td {
   outline: none;
   font-size: 1rem;
   font-family: Manrope;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.createBtn:hover {
+  transform: scale(1.05);
 }
 
 .clearBtn {
   font-size: 1rem;
   font-family: Manrope;
   color: #3b3c51;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.clearBtn:hover {
+  color: red;
 }
 
 /* style for toggle button  */
@@ -436,6 +479,20 @@ input:checked + .slider:before {
 .noBtn:hover,
 .yesBtn:hover {
   transform: scale(1.05);
+}
+
+.datePickerWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.datePickerPopup {
+  position: absolute;
+  z-index: 1000;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
 }
 
 .pagination {

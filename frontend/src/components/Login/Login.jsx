@@ -6,6 +6,7 @@ import style from "./Login.module.css";
 import logo from "../../assets/cuvette.svg";
 
 const Login = () => {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
   const [loginForm, setLoginForm] = useState({
     email: "",
@@ -25,10 +26,7 @@ const Login = () => {
 
     // sending the Registerform data to the backend
     try {
-      const response = await axios.post(
-        "http://localhost:8000/api/auth/login",
-        loginForm
-      );
+      const response = await axios.post(`${apiUrl}/api/auth/login`, loginForm);
 
       if (response.status === 200) {
         setLoginForm({
@@ -37,7 +35,7 @@ const Login = () => {
         });
         toast.success(response.data.message);
         localStorage.setItem("token", response.data.token);
-        navigate("/main");
+        navigate("/main/dashboard");
       } else {
         toast.error(response.data.message);
       }
@@ -51,7 +49,7 @@ const Login = () => {
     const token = localStorage.getItem("token");
     if (token) {
       toast.success("User Already Logged In");
-      navigate("/main");
+      navigate("/main/dashboard");
     }
   }, []);
 

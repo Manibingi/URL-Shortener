@@ -34,7 +34,7 @@ exports.registerUser = async (req, res) => {
     // Create and return JWT
     const payload = { user: { id: user._id } };
     const token = jwt.sign(payload, process.env.JWT_SECRET, {
-      expiresIn: "24h",
+      expiresIn: "1h",
     });
 
     res.status(200).json({ token, message: "Registration Successful" });

@@ -19,6 +19,7 @@ const Sidebar = () => {
         {/* Sidebar */}
         <div className={style.sideBar}>
           <div className={style.dashboard}>
+            <i class="fa-solid fa-house"></i>
             <p onClick={() => navigate("dashboard")}>Dashboard</p>
           </div>
           <div className={style.link}>

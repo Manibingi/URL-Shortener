@@ -7,6 +7,7 @@ import { useAppContext } from "../../components/AppContext";
 import { useNavigate } from "react-router-dom";
 
 function Header() {
+  const apiUrl = import.meta.env.VITE_API_URL;
   const { toggleCreateLink } = useAppContext();
   const [showLogout, setShowLogout] = useState(false);
   const [name, setName] = useState("");
@@ -22,12 +23,9 @@ function Header() {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:8000/api/auth/getUser",
-        {
-          headers: { Authorization: `${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await axios.get(`${apiUrl}/api/auth/getUser`, {
+        headers: { Authorization: `${localStorage.getItem("token")}` },
+      });
       const userData = response.data.user;
       setName({
         name: userData.name,
@@ -38,10 +36,9 @@ function Header() {
 
     if (d.getHours() >= 0 && d.getHours() < 12) {
       setGreeting("morning");
-    }
-    if (d.getHours() >= 12 && d.getHours() < 16) {
+    } else if (d.getHours() >= 12 && d.getHours() < 16) {
       setGreeting("afternoon");
-    } else {
+    } else if (d.getHours() >= 16 && d.getHours() <= 23) {
       setGreeting("evening");
     }
   };
