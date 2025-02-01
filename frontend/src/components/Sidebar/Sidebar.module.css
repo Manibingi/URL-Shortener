@@ -29,8 +29,10 @@
 .link,
 .analytics,
 .dashboard {
-  position: relative;
-  padding-left: 3vw;
+  /* position: relative; */
+  display: flex;
+  gap: 10px;
+  padding-left: 1vw;
   color: #3b3c51;
   cursor: pointer;
 }
@@ -46,16 +48,16 @@
 .analytics i,
 .dashboard i {
   font-size: 1.2rem;
-  position: absolute;
-  left: 0;
-  bottom: 0;
+  /* position: absolute; */
+
   text-align: center;
 }
 
 .setting {
-  position: relative;
+  display: flex;
+  gap: 10px;
   margin-top: 5vh;
-  padding: 7vh;
+  padding: 7vh 1vw;
   border-bottom: 2px solid #ececf2;
   border-top: 2px solid #ececf2;
   color: #3b3c51;
@@ -64,8 +66,7 @@
 
 .setting i {
   font-size: 1.2rem;
-  position: absolute;
-  left: 0;
+
   text-align: center;
 }
 

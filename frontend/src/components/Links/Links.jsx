@@ -299,7 +299,7 @@ const Links = () => {
                           className={styles.copyIcon}
                           onClick={() => handleCopy(item.shortUrl)}
                         >
-                          📋
+                          <i className="fa-regular fa-copy"></i>
                         </span>
                       </td>
                       <td className={styles.remarks}>{item.remarks}</td>

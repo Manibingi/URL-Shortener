@@ -526,10 +526,287 @@ input:checked + .slider:before {
   font-weight: bold;
 }
 
+/* Tablet Styles (768px to 1024px) */
+@media screen and (max-width: 1024px) {
+  .tableContainer {
+    min-height: 65vh;
+  }
+
+  .createLinkModel {
+    width: 50vw;
+    height: 80vh;
+  }
+
+  .deleteModel {
+    width: 40vw;
+  }
+
+  .original,
+  .short {
+    width: 15vw;
+  }
+
+  .remarks,
+  .status,
+  .btns {
+    width: 12vw;
+  }
+
+  .clicks {
+    width: 10vw;
+  }
+}
+
+/* Small Tablet Styles (601px to 768px) */
+@media screen and (max-width: 768px) {
+  .tableContainer {
+    min-height: 60vh;
+    overflow-x: auto;
+  }
+
+  .createLinkModel {
+    min-width: 50vw;
+    height: 75vh;
+  }
+
+  .deleteModel {
+    width: 50vw;
+  }
+
+  .inputStyle {
+    gap: 2vh;
+  }
+
+  .dateTimeContainer {
+    height: 6vh;
+  }
+
+  .createUrlBtns {
+    margin-top: 8vh;
+  }
+
+  .pagination button {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile Styles (Below 600px) */
+@media screen and (max-width: 600px) {
+  .container {
+    padding: 10px;
+  }
+
+  .tableContainer {
+    width: 100%;
+    overflow-x: auto;
+
+    min-height: 50vh;
+  }
+
+  /* Table adjustments */
+  .tableHeader th {
+    padding: 8px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+
+  .tableRow td {
+    padding: 8px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  /* Create Link Modal */
+  .createLinkModel {
+    width: 90vw;
+    height: 80vh;
+    border-radius: 12px;
+  }
+
+  .createLinkhead {
+    padding: 10px;
+  }
+
+  .inputStyle {
+    padding: 10px;
+    gap: 2vh;
+  }
+
+  .Urlinput label {
+    font-size: 0.9rem;
+  }
+
+  .Urlinput input,
+  .Urlinput textarea {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+
+  .dateTimeContainer {
+    height: 5vh;
+    padding: 8px;
+  }
+
+  .createUrlBtns {
+    margin-top: 5vh;
+    padding: 8px;
+  }
+
+  .createBtn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+
+  .clearBtn {
+    font-size: 0.9rem;
+  }
+
+  /* Delete Modal */
+  .deleteModel {
+    width: 85vw;
+    height: 25vh;
+  }
+
+  .deleteContent {
+    gap: 3vh;
+  }
+
+  .deleteContent p {
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .deleteModelBtns {
+    gap: 4vw;
+  }
+
+  .deleteModelBtns button {
+    padding: 8px 15px;
+    font-size: 0.85rem;
+  }
+
+  /* Pagination */
+  .pagination {
+    margin-top: 5vh;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .pagination button {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    margin: 3px;
+  }
+
+  .pageNum span {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+  }
+
+  /* Switch/Toggle */
+  .switch {
+    width: 50px;
+    height: 28px;
+  }
+
+  .slider:before {
+    height: 20px;
+    width: 20px;
+  }
+
+  .pagination {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Extra Small Devices (Below 400px) */
+@media screen and (max-width: 426px) {
+  .container {
+    margin-left: 35vw;
+  }
+  .tableContainer {
+    min-height: 45vh;
+    width: 100vw;
+    /* margin-left: 60vw; */
+  }
+
+  .createLinkModel {
+    width: 95vw;
+    height: 75vh;
+  }
+
+  .shortEdit {
+    height: 7vh;
+  }
+
+  .status {
+    width: 30vw;
+    /* height: 7vh; */
+  }
+
+  .inputStyle {
+    gap: 1.2vh;
+  }
+
+  .Urlinput textarea {
+    height: 12vh;
+  }
+
+  .createUrlBtns {
+    margin-top: 10vh;
+    flex-direction: column-reverse;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .createBtn,
+  .clearBtn {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .deleteModel {
+    width: 90vw;
+    height: 22vh;
+  }
+
+  .deleteModelBtns button {
+    padding: 8px 12px;
+    width: 45%;
+  }
+}
+
+/* Scrollbar Styling for Mobile */
+@media screen and (max-width: 768px) {
+  .tableContainer::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .tableContainer::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  .tableContainer::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  .tableContainer::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
 @media screen and (max-width: 575px) {
   .tableContainer {
     width: 100%;
-    overflow: hidden;
+    /* overflow: hidden; */
   }
 
   /* create model */

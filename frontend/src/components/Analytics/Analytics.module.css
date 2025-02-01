@@ -103,3 +103,9 @@ td {
   margin: 0 10px;
   font-weight: bold;
 }
+
+@media screen and (max-width: 426px) {
+  .container {
+    margin-left: 7vw;
+  }
+}
