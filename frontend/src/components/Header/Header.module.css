@@ -119,3 +119,77 @@
   background-color: #3b3c51;
   color: #ffffff;
 }
+
+@media screen and (max-width: 576px) {
+  .navbar {
+    flex-direction: column;
+    height: 23vh;
+    gap: 3px;
+  }
+
+  .logo {
+    text-align: center;
+    /* padding: 8px; */
+  }
+  .logo img {
+    /* text-align: center; */
+    width: 100px;
+  }
+
+  .rightNavbar {
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 10px;
+  }
+
+  .navActon {
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .profileName {
+    margin-bottom: 10px;
+  }
+
+  .logout {
+    top: 10vh;
+    left: 75vw;
+  }
+
+  .createButton {
+    background-color: #1b48da;
+    padding: 5px;
+    width: 22vw;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .navSearch {
+    padding: 11px 10px;
+    font-size: 0.8rem;
+  }
+
+  .search i {
+    position: absolute;
+    font-size: 0.9rem;
+    top: 13px;
+    left: 5px;
+  }
+  .logout {
+    position: absolute;
+    top: 5vh;
+    left: 55vw;
+    width: 2vw;
+  }
+  .logoutBtn:hover {
+    background-color: #3b3c51;
+    color: #ffffff;
+  }
+}

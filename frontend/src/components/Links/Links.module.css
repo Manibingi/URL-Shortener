@@ -509,6 +509,11 @@ input:checked + .slider:before {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: 0.3s;
+}
+
+.pagination button:hover {
+  transform: scale(1.1);
 }
 
 .pagination button:disabled {
@@ -519,4 +524,53 @@ input:checked + .slider:before {
 .pagination span {
   margin: 0 10px;
   font-weight: bold;
+}
+
+@media screen and (max-width: 575px) {
+  .tableContainer {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  /* create model */
+  .createLinkModel {
+    width: 80%;
+    height: 70%;
+  }
+  .createUrlBtns {
+    position: relative;
+    top: -13.5vh;
+  }
+  .Urlinput textarea {
+    height: 10vh;
+  }
+
+  .createBtn {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  .clearBtn {
+    font-size: 0.8rem;
+  }
+
+  /* delete model */
+  .deleteModel {
+    width: 75%;
+  }
+  .deleteModelBtns {
+    display: flex;
+    gap: 3vw;
+  }
+  .deleteModelBtns button {
+    padding: 1vh 10vw;
+    font-size: 0.9rem;
+  }
+
+  /* pagination */
+  .pagination {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
